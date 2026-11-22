@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人生客服中心 (Life Customer Service Center) — 深夜24小時暖心總機</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Google Fonts: Noto Sans TC、Noto Serif TC 與等寬字體 JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        deskBg: '#EFECE6',          // 暖米白紙感底色
+                        paper: '#FAF8F5',           // 奶油白紙張
+                        paperSub: '#F3EFEA',        // 次要紙卡底色
+                        khakiBorder: '#DCD5C9',     // 復古卡其邊框
+                        deepTeal: '#1E434C',        // 深海藍綠（深夜總機主色）
+                        deepTealLight: '#E4ECEE',   // 深海藍綠淺底
+                        deepTealHover: '#153239',
+                        warmAmber: '#D9825B',       // 暖橘燈光色
+                        warmAmberLight: '#F9EBE4',
+                        ink: '#2F2D2B',             // 復古油墨深灰字
+                        inkMuted: '#6E6963',        // 輔助說明灰字
+                        stampRed: '#C84B31',        // 核准印章紅
+                        noteYellow: '#FBF6E3',      // 便利貼暖黃
+                        noteGreen: '#EAF2EE',       // 便利貼鼠尾草綠
+                        noteBlue: '#EBF1F5',        // 便利貼霧藍
+                        notePeach: '#FAEDE8'        // 便利貼蜜桃橘
+                    },
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                        serif: ['"Noto Serif TC"', 'serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* 細膩紙張微紋理背景 */
+        body {
+            background-color: #EFECE6;
+            background-image: 
+                radial-gradient(rgba(30, 67, 76, 0.06) 0.85px, transparent 0.85px),
+                radial-gradient(rgba(217, 130, 91, 0.05) 0.85px, #EFECE6 0.85px);
+            background-size: 24px 24px;
+            background-position: 0 0, 12px 12px;
+            color: #2F2D2B;
+            font-family: 'Noto Sans TC', sans-serif;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 復古紙張卡片陰影 */
+        .paper-card {
+            background-color: #FAF8F5;
+            border: 1px solid #DCD5C9;
+            box-shadow: 0 10px 28px -10px rgba(30, 67, 76, 0.08), 0 2px 6px rgba(47, 45, 43, 0.04);
+        }
+
+        /* 虛線票券分隔線 */
+        .ticket-perforation {
+            border-top: 1.5px dashed #CFC8BC;
+            position: relative;
+        }
+        .ticket-perforation::before,
+        .ticket-perforation::after {
+            content: '';
+            position: absolute;
+            top: -8px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #EFECE6;
+            border: 1px solid #DCD5C9;
+        }
+        .ticket-perforation::before {
+            left: -25px;
+            border-left-color: transparent;
+            border-bottom-color: transparent;
+            transform: rotate(45deg);
+        }
+        .ticket-perforation::after {
+            right: -25px;
+            border-right-color: transparent;
+            border-top-color: transparent;
+            transform: rotate(45deg);
+        }
+
+        /* 紅色官方核准印章蓋下動畫 */
+        @keyframes stampImpact {
+            0% {
+                opacity: 0;
+                transform: scale(2.3) rotate(-18deg);
+            }
+            65% {
+                opacity: 0.95;
+                transform: scale(0.93) rotate(-7deg);
+            }
+            85% {
+                transform: scale(1.03) rotate(-9deg);
+            }
+            100% {
+                opacity: 0.92;
+                transform: scale(1) rotate(-8deg);
+            }
+        }
+
+        .official-stamp {
+            animation: stampImpact 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            border: 3px double #C84B31;
+            color: #C84B31;
+            box-shadow: inset 0 0 0 1px rgba(200, 75, 49, 0.22);
+            user-select: none;
+        }
+
+        /* 氣泡與面板進場動畫 */
+        @keyframes bubbleIn {
+            from { opacity: 0; transform: translateY(8px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .bubble-in {
+            animation: bubbleIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* 客服輸入中三點跳動 */
+        @keyframes dotPulse {
+            0%, 80%, 100% { transform: translateY(0); opacity: 0.35; }
+            40% { transform: translateY(-4px); opacity: 1; }
+        }
+        .typing-dot:nth-child(1) { animation: dotPulse 1.2s infinite 0s; }
+        .typing-dot:nth-child(2) { animation: dotPulse 1.2s infinite 0.2s; }
+        .typing-dot:nth-child(3) { animation: dotPulse 1.2s infinite 0.4s; }
+
+        /* 互動貼紙點擊彈跳微動畫 */
+        @keyframes stickerPop {
+            0% { transform: scale(1); }
+            45% { transform: scale(1.28); }
+            100% { transform: scale(1); }
+        }
+        .sticker-pop {
+            animation: stickerPop 0.28s ease-out;
+        }
+
+        /* 便利貼微傾角與懸停效果 */
+        .sticky-note {
+            transition: transform 0.22s ease, box-shadow 0.22s ease;
+            box-shadow: 0 4px 12px -2px rgba(47, 45, 43, 0.07), 0 1px 3px rgba(47, 45, 43, 0.05);
+        }
+        .sticky-note:hover {
+            transform: translateY(-3px) rotate(0deg) !important;
+            box-shadow: 0 12px 24px -6px rgba(30, 67, 76, 0.12);
+        }
+
+        /* 自訂對話視窗捲軸 */
+        .chat-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+        .chat-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat-scroll::-webkit-scrollbar-thumb {
+            background: #D2C9BC;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-deepTealLight selection:text-deepTeal">
+
+    <!-- ==================== 頂部深夜總機狀態列與功能切換 ==================== -->
+    <header class="w-full bg-paper/95 border-b border-khakiBorder sticky top-0 z-30 backdrop-blur-md">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2.5">
+                
+                <!-- 左側：總機識別與值班狀態 -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <!-- 復古深夜總機座機 / 暖橘桌燈 SVG -->
+                        <div class="w-10 h-10 rounded-xl bg-deepTeal text-paper flex items-center justify-center shadow-xs shrink-0 relative">
+                            <svg class="w-5 h-5 text-warmAmber" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                            </svg>
+                            <span class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-warmAmber ring-2 ring-paper animate-pulse"></span>
+                        </div>
+
+                        <div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <h1 class="font-serif text-base sm:text-lg font-bold tracking-wide text-deepTeal">
+                                    人生客服中心
+                                </h1>
+                                <span class="font-mono text-[11px] px-2 py-0.5 rounded bg-deepTealLight text-deepTeal font-medium border border-deepTeal/15">
+                                    客服編號 #042
+                                </span>
+                            </div>
+                            <p class="text-[11px] sm:text-xs text-inkMuted flex items-center gap-1.5 mt-0.5">
+                                <span class="inline-block w-1.5 h-1.5 rounded-full bg-warmAmber"></span>
+                                <span>深夜值班中 · 0人排隊，免等待直接進線</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 手機版右上角：緊急喘息小抽屜觸發鈕 -->
+                    <button type="button" onclick="toggleRespiteDrawer()" class="md:hidden px-3 py-1.5 rounded-lg bg-warmAmberLight hover:bg-warmAmber/20 border border-warmAmber/40 text-xs font-medium text-[#A35433] flex items-center gap-1 active:scale-95 transition-all">
+                        <span>⏸️</span>
+                        <span>暫停30秒</span>
+                    </button>
+                </div>
+
+                <!-- 右側：雙主模組分頁切換 + 電腦版緊急喘息抽屜鈕 -->
+                <div class="flex items-center justify-between md:justify-end gap-2 pt-2 md:pt-0 border-t md:border-t-0 border-khakiBorder/70">
+                    <!-- 分頁導覽膠囊 -->
+                    <nav class="flex bg-paperSub p-1 rounded-xl border border-khakiBorder w-full md:w-auto" aria-label="服務分區切換">
+                        <button type="button" id="tab-btn-desk" onclick="switchTab('desk')" class="flex-1 md:flex-initial px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-deepTeal text-paper shadow-2xs transition-all flex items-center justify-center gap-1.5">
+                            <span>☎️</span>
+                            <span>即時進線・對話台</span>
+                        </button>
+                        <button type="button" id="tab-btn-pantry" onclick="switchTab('pantry')" class="flex-1 md:flex-initial px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-inkMuted hover:text-ink transition-all flex items-center justify-center gap-1.5">
+                            <span>📌</span>
+                            <span>茶水間・匿名留言牆</span>
+                        </button>
+                    </nav>
+
+                    <!-- 電腦版：緊急喘息按鈕抽屜 -->
+                    <button type="button" onclick="toggleRespiteDrawer()" class="hidden md:flex px-3.5 py-2 rounded-xl bg-warmAmberLight hover:bg-[#F5DFD5] border border-warmAmber/40 text-xs font-medium text-[#9E4E2E] items-center gap-1.5 transition-all active:scale-95 shrink-0">
+                        <span>⏸️</span>
+                        <span>暫停鍵 / 放空30秒</span>
+                    </button>
+                    <!-- 管理後台入口（低調設計） -->
+                    <button type="button" onclick="openAdminPanel()" title="管理後台" class="hidden md:flex w-8 h-8 rounded-lg bg-paperSub hover:bg-khakiBorder/60 border border-khakiBorder text-inkMuted hover:text-ink items-center justify-center transition-all active:scale-95 shrink-0">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== 頂部展開式小抽屜：客服小工具・緊急喘息按鈕 ==================== -->
+        <div id="respite-drawer" class="hidden border-t border-khakiBorder bg-[#F6F2EB] shadow-inner">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    <!-- 小工具 1：不帶壓力的放空 30 秒計時器 -->
+                    <div class="p-4 rounded-xl bg-paper border border-khakiBorder flex flex-col justify-between">
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <div>
+                                <span class="font-mono text-[10px] uppercase tracking-wider text-deepTeal font-semibold">NO-PRESSURE TIMER</span>
+                                <h3 class="font-serif text-sm sm:text-base font-bold text-ink">放空 30 秒緊急喘息器</h3>
+                            </div>
+                            <span id="timer-readout" class="font-mono text-lg font-semibold text-deepTeal bg-deepTealLight px-2.5 py-0.5 rounded-lg">30.0s</span>
+                        </div>
+                        <p id="timer-caption" class="text-xs text-inkMuted mb-3">
+                            這 30 秒你不需要對任何人負責，也不必保持深呼吸姿勢。
+                        </p>
+                        <!-- 柔和進度條 -->
+                        <div class="w-full h-2.5 bg-paperSub rounded-full overflow-hidden border border-khakiBorder/60 mb-3">
+                            <div id="timer-progress" class="h-full bg-gradient-to-r from-deepTeal to-warmAmber transition-all duration-100" style="width: 100%;"></div>
+                        </div>
+                        <div class="flex items-center justify-between gap-2">
+                            <button type="button" id="timer-action-btn" onclick="toggleRespiteTimer()" class="px-4 py-2 rounded-lg bg-deepTeal hover:bg-deepTealHover text-paper text-xs font-medium transition-all active:scale-95">
+                                開始放空 30 秒
+                            </button>
+                            <button type="button" onclick="toggleRespiteDrawer()" class="text-xs text-inkMuted hover:text-ink px-2 py-1">
+                                收起抽屜 ↑
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 小工具 2：今日免責聲明產生器 -->
+                    <div class="p-4 rounded-xl bg-paper border border-khakiBorder flex flex-col justify-between relative overflow-hidden">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-mono text-[10px] uppercase tracking-wider text-warmAmber font-semibold">DAILY EXEMPTION CARD</span>
+                                <span class="font-mono text-[10px] text-inkMuted" id="exemption-code">EX-2026-01</span>
+                            </div>
+                            <div class="p-3 rounded-lg bg-noteYellow/80 border border-[#E6DCB8] min-h-[66px] flex items-center">
+                                <p id="exemption-text" class="font-serif text-sm font-medium text-ink leading-relaxed">
+                                    「今日核准：回訊息慢半拍也沒關係，已讀不回是人類的基本防禦機制。」
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between gap-2 mt-3">
+                            <button type="button" onclick="drawExemptionCard()" class="px-4 py-2 rounded-lg bg-warmAmber hover:bg-[#C7714B] text-white text-xs font-medium transition-all active:scale-95 flex items-center gap-1.5">
+                                <span>🎲</span>
+                                <span>重抽一張今日免責聲明</span>
+                            </button>
+                            <button type="button" id="copy-exemption-btn" onclick="copyExemptionCard()" class="px-3 py-2 rounded-lg bg-paperSub hover:bg-khakiBorder/50 border border-khakiBorder text-xs text-ink transition-all active:scale-95">
+                                複製小卡
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== 主內容區 ==================== -->
+    <main class="flex-grow w-full max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+
+        <!-- =====================================================================
+             模組 1：【即時進線・客服對話台】
+             ===================================================================== -->
+        <section id="section-desk" class="space-y-5 bubble-in">
+            
+            <!-- 接待模式三選一（可隨時切換） -->
+            <div class="paper-card rounded-2xl p-4 sm:p-5">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="font-mono text-[11px] px-2 py-0.5 rounded bg-deepTeal text-paper">STEP 1</span>
+                        <h2 class="text-xs sm:text-sm font-bold text-ink">選擇今天想要的接待模式（對話中可隨時切換）</h2>
+                    </div>
+                    <span id="current-mode-indicator" class="text-xs font-medium text-deepTeal">目前連線：🛌 純躺平模式</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <!-- 模式 1：純躺平模式 -->
+                    <button type="button" id="mode-card-lieflat" onclick="setReceptionMode('lieflat')" class="text-left p-3.5 rounded-xl border-2 border-deepTeal bg-deepTealLight/50 transition-all relative">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-bold text-sm text-deepTeal flex items-center gap-1.5">
+                                <span>🛌</span> 純躺平模式
+                            </span>
+                            <span class="mode-status-tag font-mono text-[10px] px-2 py-0.5 rounded bg-deepTeal text-paper">值班中</span>
+                        </div>
+                        <p class="text-xs text-inkMuted leading-relaxed">
+                            不講道理、不給建議，只陪你當一顆安靜的馬鈴薯，附核准躺平證明。
+                        </p>
+                    </button>
+
+                    <!-- 模式 2：溫柔接住模式 -->
+                    <button type="button" id="mode-card-comfort" onclick="setReceptionMode('comfort')" class="text-left p-3.5 rounded-xl border-2 border-khakiBorder bg-paperSub/60 hover:bg-warmAmberLight/35 transition-all relative">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-bold text-sm text-ink flex items-center gap-1.5">
+                                <span>🫂</span> 溫柔接住模式
+                            </span>
+                            <span class="mode-status-tag font-mono text-[10px] px-2 py-0.5 rounded bg-khakiBorder/70 text-inkMuted">切換</span>
+                        </div>
+                        <p class="text-xs text-inkMuted leading-relaxed">
+                            不強迫振作，承認這件事真的很累、很煩，給予務實且溫暖的共感陪伴。
+                        </p>
+                    </button>
+
+                    <!-- 模式 3：安靜旁聽模式 -->
+                    <button type="button" id="mode-card-listen" onclick="setReceptionMode('listen')" class="text-left p-3.5 rounded-xl border-2 border-khakiBorder bg-paperSub/60 hover:bg-deepTealLight/30 transition-all relative">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-bold text-sm text-ink flex items-center gap-1.5">
+                                <span>☕</span> 安靜旁聽模式
+                            </span>
+                            <span class="mode-status-tag font-mono text-[10px] px-2 py-0.5 rounded bg-khakiBorder/70 text-inkMuted">切換</span>
+                        </div>
+                        <p class="text-xs text-inkMuted leading-relaxed">
+                            客服只負責點頭、遞熱茶與安靜傾聽，回應簡短溫暖，不打擾你的思緒。
+                        </p>
+                    </button>
+                </div>
+
+                <!-- 純躺平模式專屬小互動列：一鍵核准今日躺平證明書 -->
+                <div id="lieflat-perk-bar" class="mt-3.5 pt-3 border-t border-dashed border-khakiBorder flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                    <div class="flex items-center gap-2 text-xs text-inkMuted">
+                        <span class="text-warmAmber">✦</span>
+                        <span>純躺平模式專屬服務：無需理由，可直接請值班人員蓋章核發今日免努力證明。</span>
+                    </div>
+                    <button type="button" onclick="openLieFlatCertModal()" class="px-3.5 py-2 rounded-lg bg-warmAmber hover:bg-[#C6704A] text-white text-xs font-medium shadow-2xs transition-all active:scale-95 shrink-0 flex items-center justify-center gap-1.5">
+                        <span>🪪</span>
+                        <span>一鍵核准今日躺平證明書</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 即時客服對話視窗主體 -->
+            <div class="paper-card rounded-2xl overflow-hidden flex flex-col">
+                <!-- 對話台頂部工單資訊列 -->
+                <div class="px-4 sm:px-6 py-3 bg-paperSub/90 border-b border-khakiBorder flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                        <span class="font-mono text-xs font-semibold text-deepTeal" id="session-ticket-no">進線單號 #CS-2026-809</span>
+                        <span class="text-khakiBorder">|</span>
+                        <span class="text-xs text-inkMuted" id="session-start-time">已接通專線</span>
+                    </div>
+                    <button type="button" onclick="openClosingSummaryModal()" class="px-3 py-1.5 rounded-lg bg-paper hover:bg-deepTeal hover:text-paper border border-khakiBorder text-xs font-medium text-ink transition-all active:scale-95 flex items-center gap-1.5">
+                        <span>🧾</span>
+                        <span>結束本次進線 / 領取服務結案小卡</span>
+                    </button>
+                </div>
+
+                <!-- 對話訊息流區域 -->
+                <div id="chat-messages" class="chat-scroll p-4 sm:p-6 space-y-4 min-h-[300px] max-h-[430px] overflow-y-auto bg-[#FCFBF8]">
+                    <!-- 初始值班人員歡迎訊息（由 JS 初始化填入） -->
+                </div>
+
+                <!-- 正在輸入中提示條 -->
+                <div id="typing-indicator" class="hidden px-5 py-2 bg-[#FCFBF8] border-t border-khakiBorder/40 text-xs text-inkMuted flex items-center gap-2">
+                    <span class="font-mono text-deepTeal font-medium">#042</span>
+                    <span>值班人員正在輸入中</span>
+                    <span class="inline-flex gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-warmAmber typing-dot"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-warmAmber typing-dot"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-warmAmber typing-dot"></span>
+                    </span>
+                </div>
+
+                <!-- 快速心情情境按鈕列 -->
+                <div class="px-4 sm:px-6 pt-3 pb-2 bg-paperSub/70 border-t border-khakiBorder">
+                    <div class="text-[11px] font-mono text-inkMuted mb-2">快速進線情境（點擊直接發送）：</div>
+                    <div class="flex flex-wrap gap-1.5 sm:gap-2">
+                        <button type="button" onclick="sendQuickScenario('今天只想當一顆石頭')" class="px-3 py-1.5 rounded-full bg-paper hover:bg-deepTealLight border border-khakiBorder text-xs text-ink transition-all active:scale-95">
+                            🪨 今天只想當一顆石頭
+                        </button>
+                        <button type="button" onclick="sendQuickScenario('工作/生活好煩，不想努力了')" class="px-3 py-1.5 rounded-full bg-paper hover:bg-deepTealLight border border-khakiBorder text-xs text-ink transition-all active:scale-95">
+                            🌀 工作/生活好煩，不想努力了
+                        </button>
+                        <button type="button" onclick="sendQuickScenario('沒發生什麼大事，但就是好累')" class="px-3 py-1.5 rounded-full bg-paper hover:bg-deepTealLight border border-khakiBorder text-xs text-ink transition-all active:scale-95">
+                            🪫 沒發生什麼大事，但就是好累
+                        </button>
+                        <button type="button" onclick="sendQuickScenario('需要有人說一聲辛苦了')" class="px-3 py-1.5 rounded-full bg-paper hover:bg-deepTealLight border border-khakiBorder text-xs text-ink transition-all active:scale-95">
+                            🍵 需要有人說一聲辛苦了
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 自由文字輸入框 -->
+                <form onsubmit="handleChatSubmit(event)" class="p-3 sm:p-4 bg-paper border-t border-khakiBorder flex items-end gap-2.5">
+                    <textarea 
+                        id="chat-input" 
+                        rows="2" 
+                        placeholder="把想說的話、懶得解釋的情緒打在這裡…（按 Enter 送出，Shift+Enter 換行）"
+                        onkeydown="handleInputKeydown(event)"
+                        class="flex-1 rounded-xl bg-paperSub/80 border border-khakiBorder focus:border-deepTeal focus:bg-white focus:ring-2 focus:ring-deepTealLight focus:outline-none px-3.5 py-2.5 text-sm text-ink placeholder-inkMuted/70 resize-none leading-relaxed"
+                    ></textarea>
+                    <button type="submit" class="px-5 py-3 rounded-xl bg-deepTeal hover:bg-deepTealHover text-paper text-xs sm:text-sm font-medium shadow-xs transition-all active:scale-95 shrink-0 flex items-center gap-1.5">
+                        <span>傳送</span>
+                        <span class="font-mono text-[11px] opacity-80">↵</span>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- =====================================================================
+             模組 2：【茶水間・匿名留言牆】
+             ===================================================================== -->
+        <section id="section-pantry" class="hidden space-y-6 bubble-in">
+            
+            <!-- 茶水間布告欄表頭與張貼表單 -->
+            <div class="paper-card rounded-2xl p-5 sm:p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-khakiBorder mb-5">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg">📌</span>
+                            <h2 class="font-serif text-lg sm:text-xl font-bold text-deepTeal">茶水間・匿名留言布告欄</h2>
+                        </div>
+                        <p class="text-xs text-inkMuted mt-1">
+                            總機隔壁的熱水壺永遠開著。這裡不評分、不說教，你可以匿名吐口氣，或給路過的人遞杯熱茶。
+                        </p>
+                    </div>
+                    <div class="font-mono text-xs px-3 py-1.5 rounded-lg bg-paperSub border border-khakiBorder text-inkMuted self-start sm:self-center">
+                        目前牆上紙條：<strong id="wall-count" class="text-deepTeal">7</strong> 則
+                    </div>
+                </div>
+
+                <!-- 張貼匿名紙條表單 -->
+                <form onsubmit="handlePostNote(event)" class="space-y-3.5 bg-paperSub/60 p-4 rounded-xl border border-khakiBorder/80">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <span class="text-xs font-bold text-ink">✍️ 寫一張匿名便利貼掛上牆</span>
+                        <span class="font-mono text-[11px] text-inkMuted">系統將自動配發匿名代號並保存於本機</span>
+                    </div>
+
+                    <!-- 心情標籤選擇 -->
+                    <div class="flex flex-wrap gap-2" id="note-tag-selector">
+                        <button type="button" data-tag="#純吐苦水" class="note-tag-btn px-3 py-1 rounded-full text-xs font-medium bg-deepTeal text-paper border border-deepTeal transition-all">
+                            #純吐苦水
+                        </button>
+                        <button type="button" data-tag="#今日躺平宣言" class="note-tag-btn px-3 py-1 rounded-full text-xs font-medium bg-paper text-ink border border-khakiBorder hover:border-deepTeal transition-all">
+                            #今日躺平宣言
+                        </button>
+                        <button type="button" data-tag="#微光打氣" class="note-tag-btn px-3 py-1 rounded-full text-xs font-medium bg-paper text-ink border border-khakiBorder hover:border-deepTeal transition-all">
+                            #微光打氣
+                        </button>
+                        <button type="button" data-tag="#路過留個言" class="note-tag-btn px-3 py-1 rounded-full text-xs font-medium bg-paper text-ink border border-khakiBorder hover:border-deepTeal transition-all">
+                            #路過留個言
+                        </button>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-2.5">
+                        <textarea 
+                            id="new-note-input" 
+                            rows="2" 
+                            maxlength="140"
+                            placeholder="寫下今天不想忍耐的碎念、小小的喘息，或留給陌生人的一句暖話（限 140 字）…"
+                            class="flex-1 rounded-xl bg-paper border border-khakiBorder focus:border-deepTeal focus:bg-white focus:outline-none p-3 text-sm text-ink placeholder-inkMuted/70 resize-none"
+                        ></textarea>
+                        <button type="submit" class="px-5 py-3 rounded-xl bg-warmAmber hover:bg-[#C6704A] text-white text-xs sm:text-sm font-medium shadow-xs transition-all active:scale-95 shrink-0 flex items-center justify-center gap-1.5">
+                            <span>📌</span>
+                            <span>貼上布告欄</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 標籤篩選列 -->
+            <div class="flex items-center justify-between flex-wrap gap-2">
+                <div class="flex flex-wrap gap-1.5" id="wall-filter-bar">
+                    <button type="button" onclick="filterWall('ALL')" data-filter="ALL" class="wall-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-deepTeal text-paper transition-all">
+                        全部紙條
+                    </button>
+                    <button type="button" onclick="filterWall('#純吐苦水')" data-filter="#純吐苦水" class="wall-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-paper border border-khakiBorder text-inkMuted hover:text-ink transition-all">
+                        #純吐苦水
+                    </button>
+                    <button type="button" onclick="filterWall('#今日躺平宣言')" data-filter="#今日躺平宣言" class="wall-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-paper border border-khakiBorder text-inkMuted hover:text-ink transition-all">
+                        #今日躺平宣言
+                    </button>
+                    <button type="button" onclick="filterWall('#微光打氣')" data-filter="#微光打氣" class="wall-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-paper border border-khakiBorder text-inkMuted hover:text-ink transition-all">
+                        #微光打氣
+                    </button>
+                    <button type="button" onclick="filterWall('#路過留個言')" data-filter="#路過留個言" class="wall-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-paper border border-khakiBorder text-inkMuted hover:text-ink transition-all">
+                        #路過留個言
+                    </button>
+                </div>
+            </div>
+
+            <!-- 便利貼網格牆 -->
+            <div id="pantry-notes-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- 由 JavaScript 動態渲染便利貼 -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== 頁尾與非醫療聲明 ==================== -->
+    <footer class="w-full border-t border-khakiBorder bg-paper/90 py-5 px-4 mt-10">
+        <div class="max-w-4xl mx-auto text-center space-y-1.5">
+            <p class="text-xs font-medium text-deepTeal">
+                本服務純屬文字陪伴與心情抒發，無任何醫療或專業心理諮商效用
+            </p>
+            <p class="text-[11px] text-inkMuted leading-relaxed">
+                人生客服中心 24H 值班室｜若您正面臨難以獨自承受的心理重擔或情緒危機，請隨時尋求專業醫療與心理諮商協助（台灣衛福部 24 小時安心專線：1925）。
+            </p>
+        </div>
+    </footer>
+
+    <!-- ==================== 彈窗 A：今日躺平證明書（純躺平模式互動） ==================== -->
+    <div id="cert-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-ink/45 backdrop-blur-xs p-4">
+        <div class="bg-paper rounded-2xl max-w-md w-full p-5 sm:p-7 border border-khakiBorder shadow-2xl relative bubble-in max-h-[92vh] overflow-y-auto">
+            <button type="button" onclick="closeLieFlatCertModal()" aria-label="關閉視窗" class="absolute top-4 right-4 w-8 h-8 rounded-lg bg-paperSub hover:bg-khakiBorder/60 flex items-center justify-center text-inkMuted hover:text-ink text-sm">
+                ✕
+            </button>
+
+            <div class="mb-4">
+                <span class="font-mono text-[10px] uppercase tracking-wider text-deepTeal font-semibold">OFFICIAL LIE-FLAT CERTIFICATE</span>
+                <h3 class="font-serif text-lg sm:text-xl font-bold text-ink">今日躺平證明書</h3>
+            </div>
+
+            <!-- 可自訂持證人暱稱 -->
+            <div class="mb-4">
+                <label for="cert-holder-input" class="block text-xs text-inkMuted mb-1">登記持證人代號（可自由修改）</label>
+                <input type="text" id="cert-holder-input" maxlength="14" value="不想努力的馬鈴薯" oninput="updateCertPreview()" class="w-full px-3 py-2 rounded-lg bg-paperSub border border-khakiBorder text-xs sm:text-sm text-ink focus:outline-none focus:border-deepTeal">
+            </div>
+
+            <!-- 復古紙質證明書主體 -->
+            <div class="p-5 rounded-xl bg-[#FDFBF7] border-2 border-deepTeal relative overflow-hidden mb-5 shadow-inner">
+                <div class="flex items-center justify-between border-b-2 border-deepTeal pb-2.5 mb-3">
+                    <div>
+                        <p class="font-serif font-bold text-base sm:text-lg tracking-widest text-deepTeal">合法躺平核准證明</p>
+                        <p class="font-mono text-[10px] text-inkMuted">LIFE CUSTOMER SERVICE CENTER</p>
+                    </div>
+                    <span id="cert-serial-no" class="font-mono text-xs px-2 py-0.5 bg-deepTealLight text-deepTeal font-semibold rounded">LF-2026-042</span>
+                </div>
+
+                <div class="space-y-2 text-xs sm:text-sm text-ink mb-4">
+                    <div class="flex justify-between border-b border-dashed border-khakiBorder pb-1">
+                        <span class="text-inkMuted">持證人：</span>
+                        <span id="cert-holder-display" class="font-bold">不想努力的馬鈴薯</span>
+                    </div>
+                    <div class="flex justify-between border-b border-dashed border-khakiBorder pb-1">
+                        <span class="text-inkMuted">核准狀態：</span>
+                        <span class="font-medium text-deepTeal">全額免予努力・安心擺爛</span>
+                    </div>
+                    <div class="flex justify-between border-b border-dashed border-khakiBorder pb-1">
+                        <span class="text-inkMuted">有效期限：</span>
+                        <span id="cert-valid-date" class="font-mono">今日 23:59 止</span>
+                    </div>
+                </div>
+
+                <p class="text-[11px] text-inkMuted leading-relaxed bg-paperSub/90 p-2.5 rounded border border-khakiBorder/70">
+                    經值班客服核對，持證人今日已達成「活著呼吸」之基礎 KPI。即日起至今日結束，享有完全放空、不自我檢討、理直氣壯躺平之合法權利。
+                </p>
+
+                <!-- 紅色官方核准印章 -->
+                <div id="cert-red-stamp" class="official-stamp absolute right-4 bottom-14 px-3 py-1.5 rounded bg-[#FDFBF7]/90 text-center">
+                    <div class="text-[9px] font-mono leading-none mb-0.5">人生客服總機</div>
+                    <div class="text-sm font-serif font-bold tracking-wider leading-tight">核准躺平<br>免予檢討</div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-2.5">
+                <button type="button" onclick="reStampCert()" class="px-4 py-2.5 rounded-xl bg-paperSub hover:bg-khakiBorder/50 border border-khakiBorder text-xs sm:text-sm font-medium text-ink transition-all active:scale-95">
+                    💮 重新蓋章
+                </button>
+                <button type="button" id="copy-cert-btn" onclick="copyCertText()" class="flex-1 px-4 py-2.5 rounded-xl bg-deepTeal hover:bg-deepTealHover text-paper text-xs sm:text-sm font-medium transition-all flex items-center justify-center gap-1.5 active:scale-95">
+                    <span>📋</span>
+                    <span>複製證明書文字</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 彈窗 C：管理後台 ==================== -->
+    <div id="admin-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-ink/55 backdrop-blur-xs p-4">
+        <div class="bg-paper rounded-2xl max-w-2xl w-full border border-khakiBorder shadow-2xl relative bubble-in flex flex-col max-h-[90vh]">
+            
+            <!-- 後台 Header -->
+            <div class="flex items-center justify-between px-6 py-4 border-b border-khakiBorder bg-deepTeal rounded-t-2xl shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-warmAmber" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="font-serif text-base font-bold text-paper">管理後台</h2>
+                        <p class="font-mono text-[10px] text-white/60">人生客服中心 · Admin Dashboard</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeAdminPanel()" class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/70 hover:text-white transition-all">✕</button>
+            </div>
+
+            <!-- 登入畫面 -->
+            <div id="admin-login-screen" class="flex flex-col items-center justify-center gap-5 py-10 px-6">
+                <div class="w-14 h-14 rounded-2xl bg-deepTealLight flex items-center justify-center">
+                    <svg class="w-6 h-6 text-deepTeal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                </div>
+                <div class="text-center">
+                    <h3 class="font-serif text-lg font-bold text-ink">後台驗證</h3>
+                    <p class="text-xs text-inkMuted mt-1">請輸入管理員密碼以進入後台</p>
+                </div>
+                <div class="w-full max-w-xs space-y-3">
+                    <input type="password" id="admin-password-input" placeholder="輸入管理員密碼" onkeydown="if(event.key==='Enter')verifyAdminPassword()" class="w-full px-4 py-2.5 rounded-xl bg-paperSub border border-khakiBorder text-sm text-ink placeholder-inkMuted/50 focus:outline-none focus:border-deepTeal focus:ring-1 focus:ring-deepTeal/30 transition-all">
+                    <p id="admin-login-error" class="text-xs text-stampRed text-center hidden">密碼錯誤，請再試一次</p>
+                    <button type="button" onclick="verifyAdminPassword()" class="w-full px-4 py-2.5 rounded-xl bg-deepTeal hover:bg-deepTealHover text-paper text-sm font-medium transition-all active:scale-95">
+                        驗證身分
+                    </button>
+                    <p class="text-[11px] text-inkMuted text-center">預設密碼：<span class="font-mono bg-paperSub px-1.5 py-0.5 rounded">admin042</span></p>
+                </div>
+            </div>
+
+            <!-- 後台主畫面（登入後顯示） -->
+            <div id="admin-dashboard-screen" class="hidden flex-col overflow-y-auto">
+                
+                <!-- 統計卡片區 -->
+                <div class="p-5 sm:p-6 space-y-5">
+
+                    <!-- 頂部四格數字摘要 -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="p-3.5 rounded-xl bg-deepTealLight border border-deepTeal/20 text-center">
+                            <div id="stat-closing-total" class="font-mono text-2xl font-bold text-deepTeal">0</div>
+                            <div class="text-[11px] text-inkMuted mt-0.5">結案小卡開啟次數</div>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-warmAmberLight border border-warmAmber/25 text-center">
+                            <div id="stat-session-total" class="font-mono text-2xl font-bold text-warmAmber">0</div>
+                            <div class="text-[11px] text-inkMuted mt-0.5">累計進線對話次數</div>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-noteGreen border border-green-200 text-center">
+                            <div id="stat-cert-total" class="font-mono text-2xl font-bold text-green-700">0</div>
+                            <div class="text-[11px] text-inkMuted mt-0.5">躺平證明書領取次數</div>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-noteBlue border border-blue-200 text-center">
+                            <div id="stat-pantry-total" class="font-mono text-2xl font-bold text-blue-600">0</div>
+                            <div class="text-[11px] text-inkMuted mt-0.5">茶水間留言牆貼文數</div>
+                        </div>
+                    </div>
+
+                    <!-- 結案小卡詳細記錄 -->
+                    <div class="paper-card rounded-xl overflow-hidden">
+                        <div class="flex items-center justify-between px-4 py-3 bg-paperSub border-b border-khakiBorder">
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm">📋</span>
+                                <h3 class="text-sm font-bold text-ink">服務結案小卡 · 開啟記錄</h3>
+                            </div>
+                            <span id="closing-log-count" class="font-mono text-xs px-2 py-0.5 rounded-full bg-deepTeal text-paper">0 筆</span>
+                        </div>
+                        <div id="closing-log-list" class="divide-y divide-khakiBorder/60 max-h-52 overflow-y-auto">
+                            <div class="px-4 py-6 text-center text-xs text-inkMuted">尚無結案記錄</div>
+                        </div>
+                    </div>
+
+                    <!-- 接待模式使用分布 -->
+                    <div class="paper-card rounded-xl overflow-hidden">
+                        <div class="flex items-center gap-2 px-4 py-3 bg-paperSub border-b border-khakiBorder">
+                            <span class="text-sm">📊</span>
+                            <h3 class="text-sm font-bold text-ink">接待模式使用統計</h3>
+                        </div>
+                        <div class="p-4 space-y-3">
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs w-28 text-inkMuted shrink-0">🛌 純躺平模式</span>
+                                <div class="flex-1 h-2.5 bg-paperSub rounded-full overflow-hidden border border-khakiBorder/60">
+                                    <div id="bar-lieflat" class="h-full bg-deepTeal rounded-full transition-all duration-500" style="width:0%"></div>
+                                </div>
+                                <span id="cnt-lieflat" class="font-mono text-xs text-deepTeal w-8 text-right">0</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs w-28 text-inkMuted shrink-0">🫂 溫柔接住模式</span>
+                                <div class="flex-1 h-2.5 bg-paperSub rounded-full overflow-hidden border border-khakiBorder/60">
+                                    <div id="bar-comfort" class="h-full bg-warmAmber rounded-full transition-all duration-500" style="width:0%"></div>
+                                </div>
+                                <span id="cnt-comfort" class="font-mono text-xs text-warmAmber w-8 text-right">0</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs w-28 text-inkMuted shrink-0">☕ 安靜旁聽模式</span>
+                                <div class="flex-1 h-2.5 bg-paperSub rounded-full overflow-hidden border border-khakiBorder/60">
+                                    <div id="bar-listen" class="h-full bg-green-600 rounded-full transition-all duration-500" style="width:0%"></div>
+                                </div>
+                                <span id="cnt-listen" class="font-mono text-xs text-green-600 w-8 text-right">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 茶水間貼紙互動統計 -->
+                    <div class="paper-card rounded-xl overflow-hidden">
+                        <div class="flex items-center gap-2 px-4 py-3 bg-paperSub border-b border-khakiBorder">
+                            <span class="text-sm">🏷️</span>
+                            <h3 class="text-sm font-bold text-ink">茶水間互動貼紙統計</h3>
+                        </div>
+                        <div class="p-4 grid grid-cols-3 gap-3">
+                            <div class="text-center p-3 rounded-xl bg-noteYellow border border-[#E6DCB8]">
+                                <div class="text-xl mb-1">☕</div>
+                                <div id="stat-sticker-tea" class="font-mono text-lg font-bold text-ink">0</div>
+                                <div class="text-[11px] text-inkMuted">遞杯熱茶</div>
+                            </div>
+                            <div class="text-center p-3 rounded-xl bg-notePeach border border-[#F0D5CC]">
+                                <div class="text-xl mb-1">🫂</div>
+                                <div id="stat-sticker-pat" class="font-mono text-lg font-bold text-ink">0</div>
+                                <div class="text-[11px] text-inkMuted">拍拍你</div>
+                            </div>
+                            <div class="text-center p-3 rounded-xl bg-noteBlue border border-blue-200">
+                                <div class="text-xl mb-1">🛌</div>
+                                <div id="stat-sticker-lie" class="font-mono text-lg font-bold text-ink">0</div>
+                                <div class="text-[11px] text-inkMuted">一起躺</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 底部操作列 -->
+                    <div class="flex flex-col sm:flex-row gap-2.5 pt-1">
+                        <button type="button" onclick="refreshAdminStats()" class="flex-1 px-4 py-2.5 rounded-xl bg-deepTeal hover:bg-deepTealHover text-paper text-xs font-medium transition-all active:scale-95 flex items-center justify-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                            <span>重新整理資料</span>
+                        </button>
+                        <button type="button" onclick="clearAdminStats()" class="px-4 py-2.5 rounded-xl bg-paperSub hover:bg-stampRed/10 border border-khakiBorder hover:border-stampRed/40 text-xs font-medium text-inkMuted hover:text-stampRed transition-all active:scale-95">
+                            清除所有統計資料
+                        </button>
+                        <button type="button" onclick="adminLogout()" class="px-4 py-2.5 rounded-xl bg-paperSub hover:bg-khakiBorder/50 border border-khakiBorder text-xs font-medium text-ink transition-all active:scale-95">
+                            登出後台
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 彈窗 B：結束本次進線 / 服務結案小卡 ==================== -->
+    <div id="closing-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-ink/45 backdrop-blur-xs p-4">
+        <div class="bg-paper rounded-2xl max-w-md w-full p-5 sm:p-7 border border-khakiBorder shadow-2xl relative bubble-in">
+            <button type="button" onclick="closeClosingSummaryModal()" aria-label="關閉視窗" class="absolute top-4 right-4 w-8 h-8 rounded-lg bg-paperSub hover:bg-khakiBorder/60 flex items-center justify-center text-inkMuted hover:text-ink text-sm">
+                ✕
+            </button>
+
+            <div class="text-center mb-4">
+                <span class="font-mono text-[10px] uppercase tracking-wider text-warmAmber font-semibold">SERVICE CLOSING RECEIPT</span>
+                <h3 class="font-serif text-xl font-bold text-deepTeal mt-0.5">今日進線服務結案小卡</h3>
+                <p class="text-xs text-inkMuted mt-1">感謝撥通深夜專線，本次對話紀錄已安全封存。</p>
+            </div>
+
+            <!-- 結案小卡紙張 -->
+            <div class="p-5 rounded-xl bg-[#FDFBF7] border border-khakiBorder shadow-inner relative">
+                <div class="flex items-center justify-between text-xs font-mono text-inkMuted pb-2.5 border-b border-khakiBorder">
+                    <span id="closing-ticket-no">#CS-2026-809</span>
+                    <span id="closing-time">2026-11-22</span>
+                </div>
+
+                <div class="py-3.5 space-y-2 text-xs sm:text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-inkMuted">本次接待模式：</span>
+                        <span id="closing-mode-name" class="font-bold text-deepTeal">🛌 純躺平模式</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-inkMuted">值班人員：</span>
+                        <span class="font-mono text-ink">客服編號 #042</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-inkMuted">處理結果：</span>
+                        <span class="text-ink">已妥善接住情緒，無需自我檢討</span>
+                    </div>
+                </div>
+
+                <!-- 虛線撕票口 -->
+                <div class="ticket-perforation my-3"></div>
+
+                <div class="pt-1">
+                    <span class="font-mono text-[10px] text-inkMuted block mb-1">值班人員結案備註：</span>
+                    <p id="closing-remark" class="font-serif text-sm text-ink leading-relaxed bg-paperSub/80 p-3 rounded-lg border border-khakiBorder/60">
+                        「今天能平安走到這裡就已經很不容易了，掛斷電話後，請安心去做自己喜歡的小事，或直接去睡覺吧。」
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-5 flex flex-col sm:flex-row gap-2.5">
+                <button type="button" onclick="startFreshSession()" class="flex-1 px-4 py-2.5 rounded-xl bg-deepTeal hover:bg-deepTealHover text-paper text-xs sm:text-sm font-medium transition-all active:scale-95">
+                    開啟新的進線對話
+                </button>
+                <button type="button" onclick="closeClosingSummaryModal()" class="px-4 py-2.5 rounded-xl bg-paperSub hover:bg-khakiBorder/50 border border-khakiBorder text-xs sm:text-sm font-medium text-ink transition-all active:scale-95">
+                    繼續留在目前對話
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== JavaScript 核心邏輯 ==================== -->
+    <script>
+        /* =====================================================================
+           0. 管理後台 Storage Keys & 追蹤工具
+           ===================================================================== */
+        const ADMIN_PASSWORD = 'admin042';
+        const STORAGE_CLOSING_LOG = 'life_cs_admin_closing_log_v1';
+        const STORAGE_SESSION_CNT = 'life_cs_admin_session_cnt_v1';
+        const STORAGE_CERT_CNT = 'life_cs_admin_cert_cnt_v1';
+        const STORAGE_MODE_CNT = 'life_cs_admin_mode_cnt_v1';
+
+        function trackEvent(type, detail = {}) {
+            const now = new Date();
+            const pad = (n) => String(n).padStart(2, '0');
+            const dateStr = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+            const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+            if (type === 'closing') {
+                // 追蹤結案小卡
+                let log = [];
+                try { log = JSON.parse(localStorage.getItem(STORAGE_CLOSING_LOG) || '[]'); } catch(e){}
+                log.unshift({ date: dateStr, time: timeStr, ticket: detail.ticket || '', mode: detail.mode || '' });
+                if (log.length > 200) log = log.slice(0, 200); // 最多保留 200 筆
+                try { localStorage.setItem(STORAGE_CLOSING_LOG, JSON.stringify(log)); } catch(e){}
+            }
+            if (type === 'session') {
+                let cnt = 0;
+                try { cnt = parseInt(localStorage.getItem(STORAGE_SESSION_CNT) || '0', 10); } catch(e){}
+                try { localStorage.setItem(STORAGE_SESSION_CNT, String(cnt + 1)); } catch(e){}
+            }
+            if (type === 'cert') {
+                let cnt = 0;
+                try { cnt = parseInt(localStorage.getItem(STORAGE_CERT_CNT) || '0', 10); } catch(e){}
+                try { localStorage.setItem(STORAGE_CERT_CNT, String(cnt + 1)); } catch(e){}
+            }
+            if (type === 'mode') {
+                let modeCnt = { lieflat: 0, comfort: 0, listen: 0 };
+                try { modeCnt = JSON.parse(localStorage.getItem(STORAGE_MODE_CNT) || '{}'); } catch(e){}
+                modeCnt[detail.mode] = (modeCnt[detail.mode] || 0) + 1;
+                try { localStorage.setItem(STORAGE_MODE_CNT, JSON.stringify(modeCnt)); } catch(e){}
+            }
+        }
+
+        /* =====================================================================
+           1. 全域狀態與語料庫定義
+           ===================================================================== */
+        let currentReceptionMode = 'lieflat'; // 'lieflat' | 'comfort' | 'listen'
+        let isAgentTyping = false;
+        let currentTicketSerial = '';
+        let selectedPostTag = '#純吐苦水';
+        let currentWallFilter = 'ALL';
+
+        // 接待模式設定資料
+        const modeMetadata = {
+            lieflat: {
+                label: '🛌 純躺平模式',
+                shortName: '純躺平模式',
+                welcome: '已為您接通「純躺平專線」。在這裡不講道理、不檢討進度，也沒有人會催你振作。想當一顆安靜的馬鈴薯，或想直接領一張今日躺平證明書都可以。'
+            },
+            comfort: {
+                label: '🫂 溫柔接住模式',
+                shortName: '溫柔接住模式',
+                welcome: '已為您切換至「溫柔接住模式」。如果今天覺得很累、很委屈，不用勉強自己擠出笑容，也不急著想通什麼道理，我在這條線的另一端陪你慢慢說。'
+            },
+            listen: {
+                label: '☕ 安靜旁聽模式',
+                shortName: '安靜旁聽模式',
+                welcome: '已為您切換至「安靜旁聽模式」。我剛剛幫你倒了一杯溫熱的茶，接下來我只負責點頭與安靜聽你說，不會打斷你，也不會給任何建議。'
+            }
+        };
+
+        // 客服多樣化、不說教、不強迫正向回覆語料庫
+        const agentResponseBank = {
+            lieflat: {
+                keywords: [
+                    {
+                        keys: ['工作', '上班', '加班', '主管', '老闆', '同事', '報告', '客戶', '開會'],
+                        replies: [
+                            '收到。經總機系統核對，您今日忍受職場荒謬與消耗腦力的額度已達 100% 上限。下班時間一到，請立刻把工作靈魂登出，剩下的事交給明天的自己去煩惱吧。',
+                            '了解，已將所有未完成的待辦事項暫時凍結。誰規定人生一定要隨時都在衝刺？今晚您唯一合法的任務，就是找個最舒服的姿勢窩著。'
+                        ]
+                    },
+                    {
+                        keys: ['石頭', '馬鈴薯', '不想努力', '擺爛', '廢', '躺平', '沒動力'],
+                        replies: [
+                            '太好了，總機最歡迎「只想當一顆石頭」的進線！石頭不用回訊息、不用做生涯規劃，只要安靜待在原地就已經 100 分了，我陪你一起待著。',
+                            '已全額核准您的躺平申請！一直保持努力本來就很違反人性，今天不成長、不自律、什麼產出都沒有，完全合法。'
+                        ]
+                    },
+                    {
+                        keys: ['累', '疲憊', '想睡', '耗盡', '沒電'],
+                        replies: [
+                            '電量低於 5% 的時候，本來就不該強迫自己運作。現在就把大腦的「自我檢討開關」關掉，安心關機休息吧。',
+                            '收到低電量訊號！系統已自動為您開啟「免予努力保護罩」，今晚什麼都不用想，去睡覺或發呆都好。'
+                        ]
+                    }
+                ],
+                defaults: [
+                    '收到您的進線，經系統判定您今日已達法定努力上限，剩餘時間請放心浪費在滑手機、發呆或睡覺上。',
+                    '明白！我剛剛幫你把外界的催促聲全部轉接進語音信箱了。現在這段時間完全屬於你，想怎麼廢就怎麼廢。',
+                    '好的，已受理您的「暫停努力」需求。地球沒有我們轉動也一樣會公轉，今天先安心當一顆無憂無慮的馬鈴薯吧。'
+                ]
+            },
+            comfort: {
+                keywords: [
+                    {
+                        keys: ['工作', '上班', '加班', '主管', '老闆', '客戶', '壓力'],
+                        replies: [
+                            '應付這些繁瑣又磨人的事情，真的耗費了你好多力氣吧。工作本來就只是生活的一部分，覺得很煩、很想逃避都是非常正常的反應，辛苦你撐到現在了。',
+                            '被工作追著跑的時候，連喘口氣都覺得奢侈。你已經很認真在面對了，現在下班了，把那些重擔先放在門外，好好照顧自己吧。'
+                        ]
+                    },
+                    {
+                        keys: ['累', '疲憊', '沒發生什麼大事', '耗盡', '空'],
+                        replies: [
+                            '有時候沒有發生什麼驚天動地的大事，但日常一點一滴的消耗，累積起來反而最讓人疲憊。覺得好累的時候，不需要替自己的疲憊找理由，先好好歇一歇吧。',
+                            '辛苦了，真的辛苦你了。能一路走過這些看似平凡卻很吃力的日子，你其實已經做得非常好了，不需要再對自己那麼嚴格。'
+                        ]
+                    },
+                    {
+                        keys: ['焦慮', '迷茫', '失敗', '擔心', '怕', '不知道'],
+                        replies: [
+                            '對未來感到不確定或害怕的時候，心裡總會懸在半空中。先別急著在此刻找出所有答案，那些還沒發生的事，我們今天先不處理，先把此刻的自己安頓好就夠了。',
+                            '就算偶爾事情沒有照著期待發展，也不代表你不好。允許自己有困惑、有停滯的時候，慢慢來，我會一直陪你待在這裡。'
+                        ]
+                    },
+                    {
+                        keys: ['孤單', '難過', '委屈', '哭', '沒人懂'],
+                        replies: [
+                            '受了委屈還要自己默默消化，心裡一定悶悶酸酸的吧。在這個總機裡，你不需要當那個「懂事又堅強」的大人，想嘆氣、想覺得不公平都是完全合理的。',
+                            '謝謝你願意把這麼沉重的心情帶來這裡跟我說。有時候我們不需要誰來解決問題，只是希望有個人能說一句：「我懂，你真的受委屈了。」我都在這裡聽著。'
+                        ]
+                    },
+                    {
+                        keys: ['辛苦了', '討拍', '安慰'],
+                        replies: [
+                            '辛苦了！今天也在這個不容易的世界裡認真呼吸、好好活著的你，真的非常辛苦了。請務必給自己一個大大的肯定，今晚好好吃頓飯、好好休息。',
+                            '必須認真跟你說一聲：你今天真的辛苦了。不管別人有沒有看見你的努力，人生客服中心都幫你記上一筆滿分了。'
+                        ]
+                    }
+                ],
+                defaults: [
+                    '謝謝你願意撥通這通電話跟我說這些。這件事聽起來確實很讓人消耗，你會有這樣的情緒是完全合理的，不用急著振作，我就在這裡陪著你。',
+                    '你的心聲我都好好接住了。生活有時候就是會讓人覺得有點吃力，這並不是你的錯。今天先別管什麼長遠目標了，顧好此刻舒不舒服就夠了。',
+                    '辛苦你扛著這些走到了現在。在這個深夜服務台裡，你永遠不需要武裝自己，想慢慢說、想發呆，我都會安靜地陪著你。'
+                ]
+            },
+            listen: {
+                defaults: [
+                    '嗯，我在聽。',
+                    '先喝口溫水吧，不著急，你慢慢說。',
+                    '（輕輕點頭）我明白，我在這裡陪你。',
+                    '嗯嗯，把想說的都倒出來也沒關係，我一直都在線上。',
+                    '（默默遞上一杯剛泡好的熱玄米茶）嗯，我聽著呢。',
+                    '好，我知道了。不想繼續說的話，我們就這樣安靜待一會兒也很好。'
+                ]
+            }
+        };
+
+        // 結案備註語料庫
+        const closingRemarks = [
+            '「今天能平安走到這裡就已經很不容易了，掛斷電話後，請安心去做自己喜歡的小事，或直接去睡覺吧。」',
+            '「本次進線未發現任何需要自我檢討的項目。祝你有個不被鬧鐘與訊息打擾的好眠。」',
+            '「所有的煩惱都已暫時寄放在總機櫃檯，今晚請兩手空空、輕輕鬆鬆地回家休息。」',
+            '「就算今天只完成了『好好呼吸』這件事，在本中心看來也是無可挑剔的表現。」'
+        ];
+
+        // 今日免責聲明小卡語料庫
+        const exemptionStatements = [
+            '「今日核准：回訊息慢半拍也沒關係，已讀不回是人類的基本防禦機制。」',
+            '「今日核准：允許自己今天只有 60 分，甚至 20 分也沒關係，及格線由你決定。」',
+            '「今日核准：對不想參加的聚會與無效社交擁有 100% 豁免權。」',
+            '「今日核准：晚餐不知道吃什麼時，隨便吃點喜歡的垃圾食物完全合法。」',
+            '「今日核准：大腦記憶體已滿，即日起至明早 9 點拒絕接收任何人生大道理。」',
+            '「今日核准：走路慢一點、做事慢一點，地球不會因為你慢了五分鐘而停止自轉。」'
+        ];
+
+        /* =====================================================================
+           2. 初始化與工具函式
+           ===================================================================== */
+        function initApp() {
+            generateNewTicketSerial();
+            renderInitialWelcome();
+            initPantryWall();
+            updateCertPreview();
+        }
+
+        function getFormattedTimeNow() {
+            const now = new Date();
+            const pad = (n) => String(n).padStart(2, '0');
+            return `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+        }
+
+        function generateNewTicketSerial() {
+            const year = new Date().getFullYear();
+            const num = Math.floor(100 + Math.random() * 899);
+            currentTicketSerial = `#CS-${year}-${num}`;
+            document.getElementById('session-ticket-no').textContent = `進線單號 ${currentTicketSerial}`;
+            document.getElementById('session-start-time').textContent = `${getFormattedTimeNow()} 已接通專線`;
+            // 【追蹤】每次新進線計+1
+            trackEvent('session');
+        }
+
+        /* =====================================================================
+           3. 分頁切換（即時進線對話台 <-> 茶水間匿名留言牆）
+           ===================================================================== */
+        function switchTab(tabName) {
+            const deskSec = document.getElementById('section-desk');
+            const pantrySec = document.getElementById('section-pantry');
+            const btnDesk = document.getElementById('tab-btn-desk');
+            const btnPantry = document.getElementById('tab-btn-pantry');
+
+            if (tabName === 'desk') {
+                deskSec.classList.remove('hidden');
+                pantrySec.classList.add('hidden');
+
+                btnDesk.className = 'flex-1 md:flex-initial px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-deepTeal text-paper shadow-2xs transition-all flex items-center justify-center gap-1.5';
+                btnPantry.className = 'flex-1 md:flex-initial px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-inkMuted hover:text-ink transition-all flex items-center justify-center gap-1.5';
+            } else {
+                deskSec.classList.add('hidden');
+                pantrySec.classList.remove('hidden');
+
+                btnPantry.className = 'flex-1 md:flex-initial px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-deepTeal text-paper shadow-2xs transition-all flex items-center justify-center gap-1.5';
+                btnDesk.className = 'flex-1 md:flex-initial px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-inkMuted hover:text-ink transition-all flex items-center justify-center gap-1.5';
+            }
+        }
+
+        /* =====================================================================
+           4. 模組 1：【即時進線・客服對話台】邏輯
+           ===================================================================== */
+        function renderInitialWelcome() {
+            const container = document.getElementById('chat-messages');
+            container.innerHTML = '';
+            appendAgentMessage(modeMetadata[currentReceptionMode].welcome, false);
+        }
+
+        function setReceptionMode(mode) {
+            if (currentReceptionMode === mode) return;
+            currentReceptionMode = mode;
+
+            // 更新三張卡片視覺
+            ['lieflat', 'comfort', 'listen'].forEach(m => {
+                const card = document.getElementById(`mode-card-${m}`);
+                const titleSpan = card.querySelector('span');
+                const tagSpan = card.querySelector('.mode-status-tag');
+
+                if (m === mode) {
+                    card.className = 'text-left p-3.5 rounded-xl border-2 border-deepTeal bg-deepTealLight/50 transition-all relative';
+                    titleSpan.className = 'font-bold text-sm text-deepTeal flex items-center gap-1.5';
+                    tagSpan.className = 'mode-status-tag font-mono text-[10px] px-2 py-0.5 rounded bg-deepTeal text-paper';
+                    tagSpan.textContent = '值班中';
+                } else {
+                    card.className = 'text-left p-3.5 rounded-xl border-2 border-khakiBorder bg-paperSub/60 hover:bg-paperSub transition-all relative';
+                    titleSpan.className = 'font-bold text-sm text-ink flex items-center gap-1.5';
+                    tagSpan.className = 'mode-status-tag font-mono text-[10px] px-2 py-0.5 rounded bg-khakiBorder/70 text-inkMuted';
+                    tagSpan.textContent = '切換';
+                }
+            });
+
+            document.getElementById('current-mode-indicator').textContent = `目前連線：${modeMetadata[mode].label}`;
+
+            // 顯示或隱藏純躺平模式專屬證明書快捷列
+            const perkBar = document.getElementById('lieflat-perk-bar');
+            if (mode === 'lieflat') {
+                perkBar.classList.remove('hidden');
+            } else {
+                perkBar.classList.add('hidden');
+            }
+
+            // 【追蹤】模式切換計次
+            trackEvent('mode', { mode });
+            // 在對話流插入系統模式切換提示與客服新模式招呼語
+            appendSystemNotice(`已切換至【${modeMetadata[mode].label}】`);
+            appendAgentMessage(modeMetadata[mode].welcome, true);
+        }
+
+        function appendSystemNotice(text) {
+            const container = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+            div.className = 'flex justify-center my-2 bubble-in';
+            div.innerHTML = `<span class="font-mono text-[11px] px-3 py-1 rounded-full bg-paperSub border border-khakiBorder text-inkMuted">${text}</span>`;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function appendUserMessage(text) {
+            const container = document.getElementById('chat-messages');
+            const wrapper = document.createElement('div');
+            wrapper.className = 'flex flex-col items-end bubble-in';
+
+            const bubble = document.createElement('div');
+            bubble.className = 'max-w-[85%] sm:max-w-[75%] rounded-2xl rounded-tr-xs bg-deepTeal text-paper px-4 py-3 text-sm leading-relaxed shadow-2xs whitespace-pre-wrap break-words';
+            bubble.textContent = text;
+
+            const time = document.createElement('span');
+            time.className = 'font-mono text-[10px] text-inkMuted mt-1 mr-1';
+            time.textContent = `你 · ${getFormattedTimeNow()}`;
+
+            wrapper.appendChild(bubble);
+            wrapper.appendChild(time);
+            container.appendChild(wrapper);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function appendAgentMessage(text, animate = true) {
+            const container = document.getElementById('chat-messages');
+            const wrapper = document.createElement('div');
+            wrapper.className = `flex items-start gap-2.5 ${animate ? 'bubble-in' : ''}`;
+
+            wrapper.innerHTML = `
+                <div class="w-8 h-8 rounded-xl bg-warmAmberLight border border-warmAmber/30 flex items-center justify-center text-[#9E4E2E] font-mono text-xs font-bold shrink-0 mt-0.5">
+                    #042
+                </div>
+                <div class="flex flex-col items-start max-w-[85%] sm:max-w-[78%]">
+                    <div class="rounded-2xl rounded-tl-xs bg-paper border border-khakiBorder px-4 py-3 text-sm text-ink leading-relaxed shadow-2xs whitespace-pre-wrap break-words agent-msg-body"></div>
+                    <span class="font-mono text-[10px] text-inkMuted mt-1 ml-1">值班人員 #042 · ${getFormattedTimeNow()}</span>
+                </div>
+            `;
+            wrapper.querySelector('.agent-msg-body').textContent = text;
+            container.appendChild(wrapper);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function handleInputKeydown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleChatSubmit(e);
+            }
+        }
+
+        function sendQuickScenario(scenarioText) {
+            if (isAgentTyping) return;
+            processUserMessage(scenarioText);
+        }
+
+        function handleChatSubmit(e) {
+            e.preventDefault();
+            if (isAgentTyping) return;
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+            input.value = '';
+            processUserMessage(text);
+        }
+
+        function processUserMessage(userText) {
+            appendUserMessage(userText);
+
+            // 顯示「值班人員正在輸入中...」
+            isAgentTyping = true;
+            const typingEl = document.getElementById('typing-indicator');
+            typingEl.classList.remove('hidden');
+
+            const replyText = generateAgentReply(currentReceptionMode, userText);
+            // 安靜旁聽模式回覆較快，其餘模擬自然打字停頓
+            const delay = currentReceptionMode === 'listen' ? 750 : 1150;
+
+            setTimeout(() => {
+                typingEl.classList.add('hidden');
+                appendAgentMessage(replyText, true);
+                isAgentTyping = false;
+            }, delay);
+        }
+
+        function generateAgentReply(mode, text) {
+            const bank = agentResponseBank[mode];
+            if (mode === 'listen') {
+                return bank.defaults[Math.floor(Math.random() * bank.defaults.length)];
+            }
+
+            if (bank.keywords) {
+                for (const group of bank.keywords) {
+                    if (group.keys.some(k => text.includes(k))) {
+                        return group.replies[Math.floor(Math.random() * group.replies.length)];
+                    }
+                }
+            }
+            return bank.defaults[Math.floor(Math.random() * bank.defaults.length)];
+        }
+
+        /* =====================================================================
+           5. 躺平證明書 & 服務結案小卡彈窗
+           ===================================================================== */
+        function openLieFlatCertModal() {
+            const modal = document.getElementById('cert-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            const serial = `LF-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 899)}`;
+            document.getElementById('cert-serial-no').textContent = serial;
+            updateCertPreview();
+            reStampCert();
+            // 【追蹤】躺平證明書領取
+            trackEvent('cert');
+        }
+
+        function closeLieFlatCertModal() {
+            const modal = document.getElementById('cert-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function updateCertPreview() {
+            const holder = document.getElementById('cert-holder-input').value.trim() || '不想努力的馬鈴薯';
+            const now = new Date();
+            document.getElementById('cert-holder-display').textContent = holder;
+            document.getElementById('cert-valid-date').textContent = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()} 23:59 止`;
+        }
+
+        function reStampCert() {
+            const stamp = document.getElementById('cert-red-stamp');
+            stamp.classList.remove('official-stamp');
+            void stamp.offsetWidth;
+            stamp.classList.add('official-stamp');
+        }
+
+        function copyCertText() {
+            const serial = document.getElementById('cert-serial-no').textContent;
+            const holder = document.getElementById('cert-holder-display').textContent;
+            const date = document.getElementById('cert-valid-date').textContent;
+            const content = `【人生客服中心｜今日躺平證明書】\n證號：${serial}\n持證人：${holder}\n核准狀態：全額免予努力・安心擺爛\n有效期限：${date}\n批示：核准躺平・免予檢討`;
+
+            copyToClipboardFallback(content, () => {
+                const btn = document.getElementById('copy-cert-btn');
+                const orig = btn.innerHTML;
+                btn.innerHTML = '<span>✅</span><span>已複製證明書！</span>';
+                setTimeout(() => { btn.innerHTML = orig; }, 2000);
+            });
+        }
+
+        function openClosingSummaryModal() {
+            const modal = document.getElementById('closing-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            const now = new Date();
+            document.getElementById('closing-ticket-no').textContent = currentTicketSerial;
+            document.getElementById('closing-time').textContent = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${getFormattedTimeNow()}`;
+            document.getElementById('closing-mode-name').textContent = modeMetadata[currentReceptionMode].label;
+            document.getElementById('closing-remark').textContent = closingRemarks[Math.floor(Math.random() * closingRemarks.length)];
+
+            // 【追蹤】記錄結案小卡開啟
+            trackEvent('closing', { ticket: currentTicketSerial, mode: modeMetadata[currentReceptionMode].label });
+        }
+
+        function closeClosingSummaryModal() {
+            const modal = document.getElementById('closing-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function startFreshSession() {
+            closeClosingSummaryModal();
+            generateNewTicketSerial();
+            renderInitialWelcome();
+        }
+
+        /* =====================================================================
+           6. 模組 2：【茶水間・匿名留言牆】與 localStorage 持久化
+           ===================================================================== */
+        const STORAGE_NOTES_KEY = 'life_cs_pantry_notes_v1';
+        const STORAGE_LIKED_KEY = 'life_cs_pantry_liked_v1';
+
+        const defaultPantryNotes = [
+            {
+                id: 'note-1',
+                alias: '#042 路過的社畜',
+                tag: '#今日躺平宣言',
+                content: '今天準時下班什麼都不想做，好爽。晚餐決定直接叫外送配無腦綜藝節目，誰都別想叫我自我提升。',
+                time: '18 分鐘前',
+                color: 'bg-noteYellow',
+                rotate: '-rotate-1',
+                reactions: { tea: 19, pat: 8, lie: 27 }
+            },
+            {
+                id: 'note-2',
+                alias: '#108 正在發呆的貓',
+                tag: '#純吐苦水',
+                content: '剛被客戶念完，躲在超商喝咖啡喘口氣。有時候真覺得大人世界好吵，好想直接原地變成一顆盆栽。',
+                time: '42 分鐘前',
+                color: 'bg-notePeach',
+                rotate: 'rotate-1',
+                reactions: { tea: 31, pat: 24, lie: 12 }
+            },
+            {
+                id: 'note-3',
+                alias: '#215 喝無糖綠茶的人',
+                tag: '#微光打氣',
+                content: '允許自己今天只有60分，甚至20分也沒關係。能平安撐完今天、沒有對誰發脾氣，就已經非常了不起了。',
+                time: '1 小時前',
+                color: 'bg-noteGreen',
+                rotate: '-rotate-1',
+                reactions: { tea: 22, pat: 15, lie: 18 }
+            },
+            {
+                id: 'note-4',
+                alias: '#309 深夜便利商店常客',
+                tag: '#路過留個言',
+                content: '剛剛買到了最後一個半價御飯糰，突然覺得今天好像也沒有那麼糟糕了。把這份微小的好運分給還在加班的你！',
+                time: '2 小時前',
+                color: 'bg-noteBlue',
+                rotate: 'rotate-1',
+                reactions: { tea: 16, pat: 9, lie: 7 }
+            },
+            {
+                id: 'note-5',
+                alias: '#417 忘記帶傘的旅人',
+                tag: '#純吐苦水',
+                content: '明明沒發生什麼大事，但下班搭捷運的時候突然覺得好累，連滑手機的力氣都沒有。先在這裡借個角落靠一下。',
+                time: '3 小時前',
+                color: 'bg-noteYellow',
+                rotate: 'rotate-1',
+                reactions: { tea: 28, pat: 33, lie: 14 }
+            },
+            {
+                id: 'note-6',
+                alias: '#520 專業馬鈴薯培育員',
+                tag: '#今日躺平宣言',
+                content: '剛跟總機領完今日躺平證明書，現在正理直氣壯地蓋著被子吹冷氣。建議所有疲憊的人類立刻比照辦理。',
+                time: '5 小時前',
+                color: 'bg-noteGreen',
+                rotate: '-rotate-1',
+                reactions: { tea: 14, pat: 6, lie: 39 }
+            },
+            {
+                id: 'note-7',
+                alias: '#611 陽台吹風觀察家',
+                tag: '#微光打氣',
+                content: '如果你現在也睡不著，別責怪自己想太多。深夜本來就是用來發呆跟放空的，總機的燈還亮著，我們都在。',
+                time: '昨天 23:40',
+                color: 'bg-notePeach',
+                rotate: 'rotate-1',
+                reactions: { tea: 25, pat: 19, lie: 11 }
+            }
+        ];
+
+        const randomAliases = [
+            '#703 剛泡好泡麵的人',
+            '#812 躲在被窩裡的刺蝟',
+            '#905 正在放空的上班族',
+            '#134 喜歡看雲的石頭',
+            '#268 剛關掉工作群組的人',
+            '#391 喝溫開水的夜貓子'
+        ];
+
+        let pantryNotes = [];
+        let userLikedMap = {}; // 紀錄使用者點擊過的貼紙狀態 { "note-1_tea": true }
+
+        function initPantryWall() {
+            try {
+                const savedNotes = localStorage.getItem(STORAGE_NOTES_KEY);
+                const savedLikes = localStorage.getItem(STORAGE_LIKED_KEY);
+                pantryNotes = savedNotes ? JSON.parse(savedNotes) : [...defaultPantryNotes];
+                userLikedMap = savedLikes ? JSON.parse(savedLikes) : {};
+            } catch (err) {
+                pantryNotes = [...defaultPantryNotes];
+                userLikedMap = {};
+            }
+
+            // 綁定發文標籤選擇器
+            document.querySelectorAll('.note-tag-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    selectedPostTag = btn.getAttribute('data-tag');
+                    document.querySelectorAll('.note-tag-btn').forEach(b => {
+                        if (b === btn) {
+                            b.className = 'note-tag-btn px-3 py-1 rounded-full text-xs font-medium bg-deepTeal text-paper border border-deepTeal transition-all';
+                        } else {
+                            b.className = 'note-tag-btn px-3 py-1 rounded-full text-xs font-medium bg-paper text-ink border border-khakiBorder hover:border-deepTeal transition-all';
+                        }
+                    });
+                });
+            });
+
+            renderPantryNotes();
+        }
+
+        function savePantryState() {
+            try {
+                localStorage.setItem(STORAGE_NOTES_KEY, JSON.stringify(pantryNotes));
+                localStorage.setItem(STORAGE_LIKED_KEY, JSON.stringify(userLikedMap));
+            } catch (err) {
+                console.warn('無法寫入 localStorage', err);
+            }
+        }
+
+        function filterWall(tag) {
+            currentWallFilter = tag;
+            document.querySelectorAll('.wall-filter-btn').forEach(btn => {
+                if (btn.getAttribute('data-filter') === tag) {
+                    btn.className = 'wall-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-deepTeal text-paper transition-all';
+                } else {
+                    btn.className = 'wall-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-paper border border-khakiBorder text-inkMuted hover:text-ink transition-all';
+                }
+            });
+            renderPantryNotes();
+        }
+
+        function handlePostNote(e) {
+            e.preventDefault();
+            const input = document.getElementById('new-note-input');
+            const content = input.value.trim();
+            if (!content) return;
+
+            const colors = ['bg-noteYellow', 'bg-noteGreen', 'bg-noteBlue', 'bg-notePeach'];
+            const rotates = ['-rotate-1', 'rotate-1'];
+
+            const newNote = {
+                id: 'note-' + Date.now(),
+                alias: randomAliases[Math.floor(Math.random() * randomAliases.length)],
+                tag: selectedPostTag,
+                content: content,
+                time: '剛剛',
+                color: colors[Math.floor(Math.random() * colors.length)],
+                rotate: rotates[Math.floor(Math.random() * rotates.length)],
+                reactions: { tea: 1, pat: 0, lie: 0 }
+            };
+
+            pantryNotes.unshift(newNote);
+            savePantryState();
+            input.value = '';
+
+            // 若目前篩選不是 ALL 且不等於新標籤，自動切回 ALL 讓使用者立刻看到剛貼的紙條
+            if (currentWallFilter !== 'ALL' && currentWallFilter !== selectedPostTag) {
+                filterWall('ALL');
+            } else {
+                renderPantryNotes();
+            }
+        }
+
+        function toggleReaction(noteId, type, btnEl) {
+            const note = pantryNotes.find(n => n.id === noteId);
+            if (!note) return;
+
+            const key = `${noteId}_${type}`;
+            if (userLikedMap[key]) {
+                // 取消點擊
+                note.reactions[type] = Math.max(0, note.reactions[type] - 1);
+                delete userLikedMap[key];
+            } else {
+                // 增加數量並觸發微動畫
+                note.reactions[type] += 1;
+                userLikedMap[key] = true;
+            }
+
+            savePantryState();
+            renderPantryNotes(noteId, type);
+        }
+
+        function renderPantryNotes(popNoteId = null, popType = null) {
+            const grid = document.getElementById('pantry-notes-grid');
+            const filtered = currentWallFilter === 'ALL'
+                ? pantryNotes
+                : pantryNotes.filter(n => n.tag === currentWallFilter);
+
+            document.getElementById('wall-count').textContent = pantryNotes.length;
+            grid.innerHTML = '';
+
+            filtered.forEach(note => {
+                const card = document.createElement('article');
+                card.className = `sticky-note ${note.color} ${note.rotate} rounded-2xl p-4 sm:p-5 border border-khakiBorder/90 flex flex-col justify-between relative`;
+
+                // 頂部圖釘裝飾 SVG
+                const pinHTML = `
+                    <div class="flex items-center justify-between gap-2 mb-3">
+                        <span class="font-mono text-xs font-semibold text-deepTeal truncate">${escapeHTML(note.alias)}</span>
+                        <span class="font-mono text-[10px] text-inkMuted shrink-0">${escapeHTML(note.time)}</span>
+                    </div>
+                `;
+
+                const tagBadgeHTML = `
+                    <div class="mb-2.5">
+                        <span class="inline-block text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-white/75 border border-khakiBorder/70 text-inkMuted">
+                            ${escapeHTML(note.tag)}
+                        </span>
+                    </div>
+                `;
+
+                const bodyHTML = `
+                    <p class="text-sm text-ink leading-relaxed whitespace-pre-wrap break-words mb-4 flex-grow">${escapeHTML(note.content)}</p>
+                `;
+
+                // 三種暖心互動貼紙按鈕
+                const stickers = [
+                    { type: 'tea', emoji: '☕', label: '遞杯熱茶' },
+                    { type: 'pat', emoji: '🫂', label: '拍拍你' },
+                    { type: 'lie', emoji: '🛌', label: '一起躺' }
+                ];
+
+                const footerButtons = stickers.map(st => {
+                    const isActive = !!userLikedMap[`${note.id}_${st.type}`];
+                    const isPop = (popNoteId === note.id && popType === st.type && isActive);
+                    const activeClass = isActive
+                        ? 'bg-deepTeal text-paper border-deepTeal font-medium'
+                        : 'bg-white/75 hover:bg-white text-ink border-khakiBorder/80';
+
+                    return `
+                        <button type="button" onclick="toggleReaction('${note.id}', '${st.type}', this)" class="${activeClass} ${isPop ? 'sticker-pop' : ''} px-2.5 py-1.5 rounded-lg border text-[11px] transition-all flex items-center gap-1 active:scale-95">
+                            <span>${st.emoji}</span>
+                            <span>${st.label}</span>
+                            <span class="font-mono opacity-90">${note.reactions[st.type]}</span>
+                        </button>
+                    `;
+                }).join('');
+
+                card.innerHTML = `
+                    <div>
+                        ${pinHTML}
+                        ${tagBadgeHTML}
+                        ${bodyHTML}
+                    </div>
+                    <div class="pt-3 border-t border-black/5 flex flex-wrap gap-1.5">
+                        ${footerButtons}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function escapeHTML(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        /* =====================================================================
+           7. 模組 3：【客服小工具・緊急喘息按鈕抽屜】
+           ===================================================================== */
+        let respiteTimerInterval = null;
+        let respiteSeconds = 30.0;
+        let isRespiteRunning = false;
+
+        const respiteQuotes = [
+            '這 30 秒你不需要對任何人負責，也不必保持深呼吸姿勢。',
+            '大腦正在進行合法的記憶體釋放，什麼都不想也沒關係……',
+            '盯著進度條慢慢變短，就是你現在唯一需要做的事……',
+            '沒有 KPI、沒有訊息通知，安靜地浪費這幾秒鐘吧……'
+        ];
+
+        function toggleRespiteDrawer() {
+            const drawer = document.getElementById('respite-drawer');
+            if (drawer.classList.contains('hidden')) {
+                drawer.classList.remove('hidden');
+                drawer.classList.add('bubble-in');
+            } else {
+                drawer.classList.add('hidden');
+            }
+        }
+
+        function toggleRespiteTimer() {
+            if (isRespiteRunning) {
+                resetRespiteTimer();
+            } else {
+                startRespiteTimer();
+            }
+        }
+
+        function startRespiteTimer() {
+            isRespiteRunning = true;
+            if (respiteSeconds <= 0) respiteSeconds = 30.0;
+
+            const btn = document.getElementById('timer-action-btn');
+            const readout = document.getElementById('timer-readout');
+            const bar = document.getElementById('timer-progress');
+            const caption = document.getElementById('timer-caption');
+
+            btn.textContent = '重置計時';
+            caption.textContent = respiteQuotes[0];
+
+            respiteTimerInterval = setInterval(() => {
+                respiteSeconds = Math.max(0, respiteSeconds - 0.1);
+                readout.textContent = `${respiteSeconds.toFixed(1)}s`;
+                bar.style.width = `${(respiteSeconds / 30.0) * 100}%`;
+
+                const elapsed = 30 - respiteSeconds;
+                const idx = Math.min(respiteQuotes.length - 1, Math.floor(elapsed / 7.5));
+                if (respiteSeconds > 0) {
+                    caption.textContent = respiteQuotes[idx];
+                } else {
+                    clearInterval(respiteTimerInterval);
+                    isRespiteRunning = false;
+                    caption.innerHTML = '<strong class="text-deepTeal">🎉 恭喜！你成功合法放空了 30 秒，完全沒有對任何人負責。</strong>';
+                    btn.textContent = '再放空 30 秒';
+                }
+            }, 100);
+        }
+
+        function resetRespiteTimer() {
+            if (respiteTimerInterval) clearInterval(respiteTimerInterval);
+            isRespiteRunning = false;
+            respiteSeconds = 30.0;
+            document.getElementById('timer-readout').textContent = '30.0s';
+            document.getElementById('timer-progress').style.width = '100%';
+            document.getElementById('timer-caption').textContent = '這 30 秒你不需要對任何人負責，也不必保持深呼吸姿勢。';
+            document.getElementById('timer-action-btn').textContent = '開始放空 30 秒';
+        }
+
+        let currentExemptionIdx = 0;
+        function drawExemptionCard() {
+            let nextIdx = Math.floor(Math.random() * exemptionStatements.length);
+            if (nextIdx === currentExemptionIdx) {
+                nextIdx = (nextIdx + 1) % exemptionStatements.length;
+            }
+            currentExemptionIdx = nextIdx;
+
+            const textEl = document.getElementById('exemption-text');
+            const codeEl = document.getElementById('exemption-code');
+            textEl.textContent = exemptionStatements[currentExemptionIdx];
+            codeEl.textContent = `EX-${new Date().getFullYear()}-0${currentExemptionIdx + 1}`;
+        }
+
+        function copyExemptionCard() {
+            const text = `【人生客服中心・今日免責聲明】\n${document.getElementById('exemption-text').textContent}`;
+            copyToClipboardFallback(text, () => {
+                const btn = document.getElementById('copy-exemption-btn');
+                const orig = btn.textContent;
+                btn.textContent = '已複製 ✓';
+                setTimeout(() => { btn.textContent = orig; }, 1800);
+            });
+        }
+
+        function copyToClipboardFallback(text, onSuccess) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand('copy');
+                if (onSuccess) onSuccess();
+            } catch (e) {
+                console.error('Copy failed', e);
+            }
+            document.body.removeChild(ta);
+        }
+
+        /* =====================================================================
+           管理後台邏輯
+           ===================================================================== */
+        let adminAuthenticated = false;
+
+        function openAdminPanel() {
+            const modal = document.getElementById('admin-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            if (adminAuthenticated) {
+                showAdminDashboard();
+            } else {
+                document.getElementById('admin-login-screen').classList.remove('hidden');
+                document.getElementById('admin-dashboard-screen').classList.remove('flex');
+                document.getElementById('admin-dashboard-screen').classList.add('hidden');
+                document.getElementById('admin-password-input').value = '';
+                document.getElementById('admin-login-error').classList.add('hidden');
+                setTimeout(() => document.getElementById('admin-password-input').focus(), 100);
+            }
+        }
+
+        function closeAdminPanel() {
+            const modal = document.getElementById('admin-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function verifyAdminPassword() {
+            const input = document.getElementById('admin-password-input').value;
+            if (input === ADMIN_PASSWORD) {
+                adminAuthenticated = true;
+                document.getElementById('admin-login-error').classList.add('hidden');
+                showAdminDashboard();
+            } else {
+                document.getElementById('admin-login-error').classList.remove('hidden');
+                document.getElementById('admin-password-input').value = '';
+                document.getElementById('admin-password-input').focus();
+            }
+        }
+
+        function adminLogout() {
+            adminAuthenticated = false;
+            document.getElementById('admin-dashboard-screen').classList.add('hidden');
+            document.getElementById('admin-dashboard-screen').classList.remove('flex');
+            document.getElementById('admin-login-screen').classList.remove('hidden');
+            document.getElementById('admin-password-input').value = '';
+        }
+
+        function showAdminDashboard() {
+            document.getElementById('admin-login-screen').classList.add('hidden');
+            document.getElementById('admin-dashboard-screen').classList.remove('hidden');
+            document.getElementById('admin-dashboard-screen').classList.add('flex');
+            refreshAdminStats();
+        }
+
+        function refreshAdminStats() {
+            // --- 結案小卡記錄 ---
+            let closingLog = [];
+            try { closingLog = JSON.parse(localStorage.getItem(STORAGE_CLOSING_LOG) || '[]'); } catch(e){}
+            document.getElementById('stat-closing-total').textContent = closingLog.length;
+            document.getElementById('closing-log-count').textContent = `${closingLog.length} 筆`;
+
+            const logList = document.getElementById('closing-log-list');
+            if (closingLog.length === 0) {
+                logList.innerHTML = '<div class="px-4 py-6 text-center text-xs text-inkMuted">尚無結案記錄</div>';
+            } else {
+                logList.innerHTML = closingLog.map((entry, idx) => `
+                    <div class="flex items-center gap-3 px-4 py-2.5 hover:bg-paperSub/60 transition-colors">
+                        <span class="font-mono text-[10px] text-inkMuted w-5 text-right shrink-0">${idx + 1}</span>
+                        <div class="w-1.5 h-1.5 rounded-full bg-deepTeal/50 shrink-0"></div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="font-mono text-[11px] font-semibold text-deepTeal">${escapeHTML(entry.ticket)}</span>
+                                <span class="text-[10px] px-1.5 py-0.5 rounded bg-paperSub border border-khakiBorder text-inkMuted truncate max-w-[120px]">${escapeHTML(entry.mode)}</span>
+                            </div>
+                        </div>
+                        <div class="text-right shrink-0">
+                            <div class="font-mono text-[10px] text-inkMuted">${escapeHTML(entry.date)}</div>
+                            <div class="font-mono text-[10px] text-ink">${escapeHTML(entry.time)}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // --- 累計進線次數 ---
+            let sessionCnt = 0;
+            try { sessionCnt = parseInt(localStorage.getItem(STORAGE_SESSION_CNT) || '0', 10); } catch(e){}
+            document.getElementById('stat-session-total').textContent = sessionCnt;
+
+            // --- 躺平證明書 ---
+            let certCnt = 0;
+            try { certCnt = parseInt(localStorage.getItem(STORAGE_CERT_CNT) || '0', 10); } catch(e){}
+            document.getElementById('stat-cert-total').textContent = certCnt;
+
+            // --- 茶水間留言數 ---
+            let notes = [];
+            try { notes = JSON.parse(localStorage.getItem(STORAGE_NOTES_KEY) || '[]'); } catch(e){}
+            document.getElementById('stat-pantry-total').textContent = notes.length;
+
+            // --- 接待模式統計 ---
+            let modeCnt = { lieflat: 0, comfort: 0, listen: 0 };
+            try { modeCnt = { lieflat: 0, comfort: 0, listen: 0, ...JSON.parse(localStorage.getItem(STORAGE_MODE_CNT) || '{}') }; } catch(e){}
+            const totalMode = (modeCnt.lieflat || 0) + (modeCnt.comfort || 0) + (modeCnt.listen || 0) || 1;
+            ['lieflat', 'comfort', 'listen'].forEach(m => {
+                const cnt = modeCnt[m] || 0;
+                document.getElementById(`cnt-${m}`).textContent = cnt;
+                document.getElementById(`bar-${m}`).style.width = `${Math.round((cnt / totalMode) * 100)}%`;
+            });
+
+            // --- 貼紙統計（從 pantry notes 加總）---
+            let teaTotal = 0, patTotal = 0, lieTotal = 0;
+            notes.forEach(n => {
+                if (n.reactions) {
+                    teaTotal += n.reactions.tea || 0;
+                    patTotal += n.reactions.pat || 0;
+                    lieTotal += n.reactions.lie || 0;
+                }
+            });
+            document.getElementById('stat-sticker-tea').textContent = teaTotal;
+            document.getElementById('stat-sticker-pat').textContent = patTotal;
+            document.getElementById('stat-sticker-lie').textContent = lieTotal;
+        }
+
+        function clearAdminStats() {
+            if (!confirm('確定要清除所有統計資料嗎？此操作無法復原。')) return;
+            try {
+                localStorage.removeItem(STORAGE_CLOSING_LOG);
+                localStorage.removeItem(STORAGE_SESSION_CNT);
+                localStorage.removeItem(STORAGE_CERT_CNT);
+                localStorage.removeItem(STORAGE_MODE_CNT);
+            } catch(e){}
+            refreshAdminStats();
+        }
+
+        document.getElementById('admin-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeAdminPanel();
+        });
+
+        // 點擊彈窗外部遮罩關閉
+        document.getElementById('cert-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeLieFlatCertModal();
+        });
+        document.getElementById('closing-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeClosingSummaryModal();
+        });
+
+        window.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
